@@ -1,4 +1,5 @@
 ﻿using BarberSaaS.API.Data;
+using BarberSaaS.API.DTOs.BarberShop;
 using BarberSaaS.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,22 +18,37 @@ public class BarberShopsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<BarberShop>>> GetAll()
+    public async Task<ActionResult<IEnumerable<BarberShopResponseDto>>> GetAll()
     {
         var barberShops = await _context.BarberShops
             .AsNoTracking()
             .OrderBy(x => x.Id)
+            .Select(x => new BarberShopResponseDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Phone = x.Phone,
+                CreatedAt = x.CreatedAt
+            })
             .ToListAsync();
 
         return Ok(barberShops);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<BarberShop>> GetById(int id)
+    public async Task<ActionResult<BarberShopResponseDto>> GetById(int id)
     {
         var barberShop = await _context.BarberShops
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == id);
+            .Where(x => x.Id == id)
+            .Select(x => new BarberShopResponseDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Phone = x.Phone,
+                CreatedAt = x.CreatedAt
+            })
+            .FirstOrDefaultAsync();
 
         if (barberShop is null)
             return NotFound(new { message = "Barbearia não encontrada." });
@@ -41,40 +57,39 @@ public class BarberShopsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<BarberShop>> Create(BarberShop barberShop)
+    public async Task<ActionResult<BarberShopResponseDto>> Create([FromBody] CreateBarberShopDto dto)
     {
-        if (string.IsNullOrWhiteSpace(barberShop.Name))
-            return BadRequest(new { message = "O nome da barbearia é obrigatório." });
-
-        if (string.IsNullOrWhiteSpace(barberShop.Phone))
-            return BadRequest(new { message = "O telefone da barbearia é obrigatório." });
-
-        barberShop.Name = barberShop.Name.Trim();
-        barberShop.Phone = barberShop.Phone.Trim();
-        barberShop.CreatedAt = DateTime.UtcNow;
+        var barberShop = new BarberShop
+        {
+            Name = dto.Name.Trim(),
+            Phone = dto.Phone.Trim(),
+            CreatedAt = DateTime.UtcNow
+        };
 
         _context.BarberShops.Add(barberShop);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetById), new { id = barberShop.Id }, barberShop);
+        var response = new BarberShopResponseDto
+        {
+            Id = barberShop.Id,
+            Name = barberShop.Name,
+            Phone = barberShop.Phone,
+            CreatedAt = barberShop.CreatedAt
+        };
+
+        return CreatedAtAction(nameof(GetById), new { id = barberShop.Id }, response);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, BarberShop updatedBarberShop)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateBarberShopDto dto)
     {
         var barberShop = await _context.BarberShops.FirstOrDefaultAsync(x => x.Id == id);
 
         if (barberShop is null)
             return NotFound(new { message = "Barbearia não encontrada." });
 
-        if (string.IsNullOrWhiteSpace(updatedBarberShop.Name))
-            return BadRequest(new { message = "O nome da barbearia é obrigatório." });
-
-        if (string.IsNullOrWhiteSpace(updatedBarberShop.Phone))
-            return BadRequest(new { message = "O telefone da barbearia é obrigatório." });
-
-        barberShop.Name = updatedBarberShop.Name.Trim();
-        barberShop.Phone = updatedBarberShop.Phone.Trim();
+        barberShop.Name = dto.Name.Trim();
+        barberShop.Phone = dto.Phone.Trim();
 
         await _context.SaveChangesAsync();
 
@@ -82,7 +97,7 @@ public class BarberShopsController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         var barberShop = await _context.BarberShops.FirstOrDefaultAsync(x => x.Id == id);
 
