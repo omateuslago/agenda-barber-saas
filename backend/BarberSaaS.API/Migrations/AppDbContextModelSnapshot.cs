@@ -102,12 +102,17 @@ namespace BarberSaaS.API.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<int>("OwnerUserId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerUserId");
 
                     b.ToTable("barber_shops", (string)null);
                 });
@@ -141,6 +146,39 @@ namespace BarberSaaS.API.Migrations
                     b.ToTable("services", (string)null);
                 });
 
+            modelBuilder.Entity("BarberSaaS.API.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("users", (string)null);
+                });
+
             modelBuilder.Entity("BarberSaaS.API.Models.Appointment", b =>
                 {
                     b.HasOne("BarberSaaS.API.Models.Barber", "Barber")
@@ -171,6 +209,17 @@ namespace BarberSaaS.API.Migrations
                     b.Navigation("BarberShop");
                 });
 
+            modelBuilder.Entity("BarberSaaS.API.Models.BarberShop", b =>
+                {
+                    b.HasOne("BarberSaaS.API.Models.User", "OwnerUser")
+                        .WithMany("BarberShops")
+                        .HasForeignKey("OwnerUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("OwnerUser");
+                });
+
             modelBuilder.Entity("BarberSaaS.API.Models.Service", b =>
                 {
                     b.HasOne("BarberSaaS.API.Models.BarberShop", "BarberShop")
@@ -197,6 +246,11 @@ namespace BarberSaaS.API.Migrations
             modelBuilder.Entity("BarberSaaS.API.Models.Service", b =>
                 {
                     b.Navigation("Appointments");
+                });
+
+            modelBuilder.Entity("BarberSaaS.API.Models.User", b =>
+                {
+                    b.Navigation("BarberShops");
                 });
 #pragma warning restore 612, 618
         }

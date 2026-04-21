@@ -13,7 +13,7 @@ namespace BarberSaaS.API.Data
         public DbSet<Barber> Barbers => Set<Barber>();
         public DbSet<Service> Services => Set<Service>();
         public DbSet<Appointment> Appointments => Set<Appointment>();
-
+        public DbSet<User> Users => Set<User>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,6 +44,11 @@ namespace BarberSaaS.API.Data
                     .WithOne(x => x.BarberShop)
                     .HasForeignKey(x => x.BarberShopId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(x => x.OwnerUser)
+                    .WithMany(x => x.BarberShops)
+                    .HasForeignKey(x => x.OwnerUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Barber>(entity =>
@@ -105,6 +110,30 @@ namespace BarberSaaS.API.Data
                     .WithMany(x => x.Appointments)
                     .HasForeignKey(x => x.ServiceId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("users");
+
+                entity.HasKey(x => x.Id);
+
+                entity.Property(x => x.FullName)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(x => x.Email)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(x => x.PasswordHash)
+                    .IsRequired();
+
+                entity.Property(x => x.CreatedAt)
+                    .IsRequired();
+
+                entity.HasIndex(x => x.Email)
+                    .IsUnique();
             });
         }
     }
