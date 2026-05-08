@@ -4,7 +4,7 @@ using BarberSaaS.API.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,14 +31,19 @@ builder.Services.AddSwaggerGen(options =>
         BearerFormat = "JWT"
     });
 
-    options.AddSecurityRequirement(document =>
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        return new OpenApiSecurityRequirement
         {
-            [
-                new OpenApiSecuritySchemeReference(schemeId, document)
-            ] = []
-        };
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = schemeId
+                }
+            },
+            new string[] {}
+        }
     });
 });
 
