@@ -3,10 +3,13 @@ using BarberSaaS.API.DTOs.Appointment;
 using BarberSaaS.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BarberSaaS.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class AppointmentsController : ControllerBase
 {
@@ -17,15 +20,23 @@ public class AppointmentsController : ControllerBase
         _context = context;
     }
 
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetAll(
         [FromQuery] DateTime? date,
         [FromQuery] int? barberId)
     {
+        var userId = GetUserId();
+
         var query = _context.Appointments
             .AsNoTracking()
             .Include(x => x.Barber)
             .Include(x => x.Service)
+            .Where(x => x.Barber!.BarberShop!.OwnerUserId == userId)
             .AsQueryable();
 
         if (date.HasValue)
@@ -65,11 +76,13 @@ public class AppointmentsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<AppointmentResponseDto>> GetById(int id)
     {
+        var userId = GetUserId();
+
         var appointment = await _context.Appointments
             .AsNoTracking()
             .Include(x => x.Barber)
             .Include(x => x.Service)
-            .Where(x => x.Id == id)
+            .Where(x => x.Id == id && x.Barber!.BarberShop!.OwnerUserId == userId)
             .Select(x => new AppointmentResponseDto
             {
                 Id = x.Id,
@@ -95,22 +108,26 @@ public class AppointmentsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<AppointmentResponseDto>> Create([FromBody] CreateAppointmentDto dto)
     {
+        var userId = GetUserId();
+
         if (dto.StartsAt <= DateTime.UtcNow)
             return BadRequest(new { message = "Não é possível agendar no passado." });
 
         var barber = await _context.Barbers
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == dto.BarberId);
+            .Include(x => x.BarberShop)
+            .FirstOrDefaultAsync(x => x.Id == dto.BarberId && x.BarberShop!.OwnerUserId == userId);
 
         if (barber is null)
-            return BadRequest(new { message = "Barbeiro não encontrado." });
+            return BadRequest(new { message = "Barbeiro não encontrado ou não pertence ao usuário logado." });
 
         var service = await _context.Services
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Id == dto.ServiceId);
+            .Include(x => x.BarberShop)
+            .FirstOrDefaultAsync(x => x.Id == dto.ServiceId && x.BarberShop!.OwnerUserId == userId);
 
         if (service is null)
-            return BadRequest(new { message = "Serviço não encontrado." });
+            return BadRequest(new { message = "Serviço não encontrado ou não pertence ao usuário logado." });
 
         if (barber.BarberShopId != service.BarberShopId)
             return BadRequest(new { message = "Barbeiro e serviço não pertencem à mesma barbearia." });
@@ -173,26 +190,36 @@ public class AppointmentsController : ControllerBase
     [HttpPatch("{id:int}/status")]
     public async Task<IActionResult> UpdateStatus(int id, [FromBody] UpdateAppointmentStatusDto dto)
     {
+        var userId = GetUserId();
+
         var allowedStatuses = new[] { "Scheduled", "Completed", "Cancelled" };
 
         if (!allowedStatuses.Contains(dto.Status))
             return BadRequest(new { message = "Status inválido. Use Scheduled, Completed ou Cancelled." });
 
-        var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
+        var appointment = await _context.Appointments
+            .Include(x => x.Barber)
+            .ThenInclude(x => x!.BarberShop)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Barber!.BarberShop!.OwnerUserId == userId);
 
         if (appointment is null)
             return NotFound(new { message = "Agendamento não encontrado." });
 
         appointment.Status = dto.Status;
+
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
-
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var appointment = await _context.Appointments.FirstOrDefaultAsync(x => x.Id == id);
+        var userId = GetUserId();
+
+        var appointment = await _context.Appointments
+            .Include(x => x.Barber)
+            .ThenInclude(x => x!.BarberShop)
+            .FirstOrDefaultAsync(x => x.Id == id && x.Barber!.BarberShop!.OwnerUserId == userId);
 
         if (appointment is null)
             return NotFound(new { message = "Agendamento não encontrado." });

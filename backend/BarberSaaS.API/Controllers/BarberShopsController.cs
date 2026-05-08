@@ -3,10 +3,13 @@ using BarberSaaS.API.DTOs.BarberShop;
 using BarberSaaS.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BarberSaaS.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class BarberShopsController : ControllerBase
 {
@@ -17,11 +20,19 @@ public class BarberShopsController : ControllerBase
         _context = context;
     }
 
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<BarberShopResponseDto>>> GetAll()
     {
+        var userId = GetUserId();
+
         var barberShops = await _context.BarberShops
             .AsNoTracking()
+            .Where(x => x.OwnerUserId == userId)
             .OrderBy(x => x.Id)
             .Select(x => new BarberShopResponseDto
             {
@@ -38,9 +49,11 @@ public class BarberShopsController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<BarberShopResponseDto>> GetById(int id)
     {
+        var userId = GetUserId();
+
         var barberShop = await _context.BarberShops
             .AsNoTracking()
-            .Where(x => x.Id == id)
+            .Where(x => x.Id == id && x.OwnerUserId == userId)
             .Select(x => new BarberShopResponseDto
             {
                 Id = x.Id,
@@ -59,10 +72,13 @@ public class BarberShopsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BarberShopResponseDto>> Create([FromBody] CreateBarberShopDto dto)
     {
+        var userId = GetUserId();
+
         var barberShop = new BarberShop
         {
             Name = dto.Name.Trim(),
             Phone = dto.Phone.Trim(),
+            OwnerUserId = userId,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -83,7 +99,10 @@ public class BarberShopsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateBarberShopDto dto)
     {
-        var barberShop = await _context.BarberShops.FirstOrDefaultAsync(x => x.Id == id);
+        var userId = GetUserId();
+
+        var barberShop = await _context.BarberShops
+            .FirstOrDefaultAsync(x => x.Id == id && x.OwnerUserId == userId);
 
         if (barberShop is null)
             return NotFound(new { message = "Barbearia não encontrada." });
@@ -99,7 +118,10 @@ public class BarberShopsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var barberShop = await _context.BarberShops.FirstOrDefaultAsync(x => x.Id == id);
+        var userId = GetUserId();
+
+        var barberShop = await _context.BarberShops
+            .FirstOrDefaultAsync(x => x.Id == id && x.OwnerUserId == userId);
 
         if (barberShop is null)
             return NotFound(new { message = "Barbearia não encontrada." });

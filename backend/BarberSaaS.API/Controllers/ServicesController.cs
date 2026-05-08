@@ -3,10 +3,13 @@ using BarberSaaS.API.DTOs.Service;
 using BarberSaaS.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BarberSaaS.API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ServicesController : ControllerBase
 {
@@ -17,11 +20,19 @@ public class ServicesController : ControllerBase
         _context = context;
     }
 
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+    }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ServiceResponseDto>>> GetAll()
     {
+        var userId = GetUserId();
+
         var services = await _context.Services
             .AsNoTracking()
+            .Where(x => x.BarberShop!.OwnerUserId == userId)
             .OrderBy(x => x.Id)
             .Select(x => new ServiceResponseDto
             {
@@ -39,9 +50,11 @@ public class ServicesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ServiceResponseDto>> GetById(int id)
     {
+        var userId = GetUserId();
+
         var service = await _context.Services
             .AsNoTracking()
-            .Where(x => x.Id == id)
+            .Where(x => x.Id == id && x.BarberShop!.OwnerUserId == userId)
             .Select(x => new ServiceResponseDto
             {
                 Id = x.Id,
@@ -61,11 +74,13 @@ public class ServicesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ServiceResponseDto>> Create([FromBody] CreateServiceDto dto)
     {
+        var userId = GetUserId();
+
         var barberShopExists = await _context.BarberShops
-            .AnyAsync(x => x.Id == dto.BarberShopId);
+            .AnyAsync(x => x.Id == dto.BarberShopId && x.OwnerUserId == userId);
 
         if (!barberShopExists)
-            return BadRequest(new { message = "A barbearia informada não existe." });
+            return BadRequest(new { message = "A barbearia informada não existe ou não pertence ao usuário logado." });
 
         var service = new Service
         {
@@ -93,16 +108,19 @@ public class ServicesController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateServiceDto dto)
     {
-        var service = await _context.Services.FirstOrDefaultAsync(x => x.Id == id);
+        var userId = GetUserId();
+
+        var service = await _context.Services
+            .FirstOrDefaultAsync(x => x.Id == id && x.BarberShop!.OwnerUserId == userId);
 
         if (service is null)
             return NotFound(new { message = "Serviço não encontrado." });
 
         var barberShopExists = await _context.BarberShops
-            .AnyAsync(x => x.Id == dto.BarberShopId);
+            .AnyAsync(x => x.Id == dto.BarberShopId && x.OwnerUserId == userId);
 
         if (!barberShopExists)
-            return BadRequest(new { message = "A barbearia informada não existe." });
+            return BadRequest(new { message = "A barbearia informada não existe ou não pertence ao usuário logado." });
 
         service.Name = dto.Name.Trim();
         service.Price = dto.Price;
@@ -117,7 +135,10 @@ public class ServicesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var service = await _context.Services.FirstOrDefaultAsync(x => x.Id == id);
+        var userId = GetUserId();
+
+        var service = await _context.Services
+            .FirstOrDefaultAsync(x => x.Id == id && x.BarberShop!.OwnerUserId == userId);
 
         if (service is null)
             return NotFound(new { message = "Serviço não encontrado." });
