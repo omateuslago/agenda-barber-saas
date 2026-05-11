@@ -4,6 +4,8 @@ using BarberSaaS.API.Models;
 using BarberSaaS.API.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BarberSaaS.API.Controllers;
 
@@ -18,6 +20,10 @@ public class AuthController : ControllerBase
     {
         _context = context;
         _jwtTokenService = jwtTokenService;
+    }
+    private int GetUserId()
+    {
+        return int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
     }
 
     [HttpPost("register")]
@@ -76,5 +82,28 @@ public class AuthController : ControllerBase
             FullName = user.FullName,
             Email = user.Email
         });
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<ActionResult<UserMeResponseDto>> Me()
+    {
+        var userId = GetUserId();
+
+        var user = await _context.Users
+            .AsNoTracking()
+            .Where(x => x.Id == userId)
+            .Select(x => new UserMeResponseDto
+            {
+                Id = x.Id,
+                FullName = x.FullName,
+                Email = x.Email
+            })
+            .FirstOrDefaultAsync();
+
+        if (user is null)
+            return Unauthorized(new { message = "Usuário não encontrado." });
+
+        return Ok(user);
     }
 }
