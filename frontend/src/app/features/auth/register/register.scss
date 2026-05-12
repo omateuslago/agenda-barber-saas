@@ -1,0 +1,284 @@
+.register-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  background: #f3f0ea;
+}
+
+.register-card {
+  padding: 48px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 560px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 22px;
+  font-weight: 900;
+  color: #171717;
+  margin-bottom: 64px;
+}
+
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #171717;
+  color: #c9a45c;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+}
+
+.card-header {
+  margin-bottom: 28px;
+
+  .eyebrow {
+    color: #9b7938;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: clamp(32px, 4vw, 52px);
+    line-height: 1;
+    color: #171717;
+    margin: 0 0 16px;
+  }
+
+  p {
+    margin: 0;
+    color: #6b6257;
+    line-height: 1.6;
+    font-size: 16px;
+  }
+}
+
+form {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  font-weight: 800;
+  color: #2b2b2b;
+}
+
+input {
+  height: 52px;
+  border: 1px solid #ddd2c4;
+  border-radius: 14px;
+  padding: 0 16px;
+  font-size: 15px;
+  background: #fff;
+  outline: none;
+
+  &:focus {
+    border-color: #c9a45c;
+    box-shadow: 0 0 0 4px rgba(201, 164, 92, 0.18);
+  }
+}
+
+button {
+  height: 54px;
+  border: 0;
+  border-radius: 14px;
+  background: #171717;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  margin-top: 8px;
+
+  &:hover {
+    background: #2b2b2b;
+  }
+}
+
+.login-link {
+  margin-top: 22px;
+  color: #6b6257;
+
+  a {
+    color: #171717;
+    font-weight: 900;
+    text-decoration: none;
+  }
+}
+
+.preview-panel {
+  background:
+    radial-gradient(circle at top left, rgba(201, 164, 92, 0.28), transparent 34%),
+    linear-gradient(135deg, #171717, #2b2118);
+  display: grid;
+  place-items: center;
+  padding: 56px;
+  overflow: hidden;
+}
+
+.phone-preview {
+  width: min(360px, 100%);
+  border-radius: 34px;
+  background: #f3f0ea;
+  padding: 18px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+  transform: rotate(-3deg);
+}
+
+.phone-header {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #171717;
+
+  span {
+    width: 28px;
+    height: 28px;
+    border-radius: 10px;
+    background: #e5dac9;
+  }
+}
+
+.metric-card {
+  background: #fff;
+  border-radius: 22px;
+  padding: 18px;
+  margin-bottom: 12px;
+
+  small {
+    display: block;
+    color: #7a7065;
+    margin-bottom: 8px;
+  }
+
+  strong {
+    font-size: 26px;
+    color: #171717;
+  }
+
+  &.dark {
+    background: #171717;
+
+    small {
+      color: #c9a45c;
+    }
+
+    strong {
+      color: #fff;
+      font-size: 42px;
+    }
+  }
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.schedule-card {
+  background: #fff;
+  border-radius: 18px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+
+  strong {
+    display: block;
+    color: #171717;
+  }
+
+  small {
+    color: #7a7065;
+  }
+
+  span {
+    background: #efe2cc;
+    color: #7a5620;
+    font-weight: 900;
+    padding: 8px 10px;
+    border-radius: 999px;
+  }
+}
+
+@media (max-width: 900px) {
+  .register-page {
+    grid-template-columns: 1fr;
+  }
+
+  .register-card {
+    padding: 32px 22px;
+    max-width: 100%;
+  }
+
+  .brand {
+    margin-bottom: 36px;
+  }
+
+  .card-header {
+    h1 {
+      font-size: 32px;
+    }
+
+    p {
+      font-size: 15px;
+    }
+  }
+
+  input {
+    height: 54px;
+    font-size: 16px;
+  }
+
+  button {
+    height: 56px;
+  }
+
+  .preview-panel {
+    min-height: 420px;
+    padding: 32px 22px;
+  }
+
+  .phone-preview {
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-card {
+    padding: 26px 18px 30px;
+  }
+
+  .brand {
+    font-size: 20px;
+  }
+
+  .brand-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .card-header {
+    h1 {
+      font-size: 28px;
+    }
+  }
+
+  .preview-panel {
+    display: none;
+  }
+}
