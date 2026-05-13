@@ -1,22 +1,21 @@
 <div class="login-page">
   <section class="hero">
     <div class="brand">
-      <div class="brand-icon">BF</div>
-      <span>BarberFlow</span>
+      <div class="brand-icon">FB</div>
+      <span>FlowBar</span>
     </div>
 
     <div class="hero-content">
       <p class="eyebrow">Gestão para barbearias</p>
-      <h1>Organize sua agenda e acompanhe sua barbearia em um só lugar.</h1>
+      <h1>Menos tempo no WhatsApp. Mais clientes na cadeira.</h1>
       <p class="description">
-        Controle barbeiros, serviços e agendamentos com uma plataforma simples,
-        moderna e feita para o dia a dia da barbearia.
+        Confirme horários, envie lembretes e reduza faltas com uma agenda inteligente feita para barbeiros.
       </p>
 
       <div class="features">
         <span>Agenda inteligente</span>
         <span>Dashboard financeiro</span>
-        <span>Multi-barbearia</span>
+        <span>Lembretes no WhatsApp</span>
       </div>
     </div>
   </section>
@@ -27,18 +26,34 @@
       <p>Acesse o painel da sua barbearia.</p>
     </div>
 
-    <form>
+    <form (ngSubmit)="onSubmit()">
       <label>
         E-mail
-        <input type="email" placeholder="seuemail@exemplo.com" />
+        <input
+          type="email"
+          name="email"
+          placeholder="seuemail@exemplo.com"
+          [(ngModel)]="email"
+        />
       </label>
 
       <label>
         Senha
-        <input type="password" placeholder="Digite sua senha" />
+        <input
+          type="password"
+          name="password"
+          placeholder="Digite sua senha"
+          [(ngModel)]="password"
+        />
       </label>
 
-      <button type="submit">Entrar</button>
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Entrando...' : 'Entrar' }}
+      </button>
+      
+      <p class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
     </form>
 
     <p class="register-link">

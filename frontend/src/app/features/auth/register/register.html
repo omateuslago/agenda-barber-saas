@@ -1,36 +1,56 @@
 <div class="register-page">
   <section class="register-card">
     <div class="brand">
-      <div class="brand-icon">BF</div>
-      <span>BarberFlow</span>
+      <div class="brand-icon">FB</div>
+      <span>FlowBar</span>
     </div>
 
     <div class="card-header">
       <p class="eyebrow">Comece agora</p>
-      <h1>Crie sua conta e organize sua barbearia.</h1>
+      <h1>Comece a automatizar sua barbearia hoje.</h1>
       <p>
-        Cadastre sua barbearia, adicione barbeiros, serviços e acompanhe seus
-        agendamentos em uma plataforma simples e moderna.
+        Crie sua conta, cadastre seus serviços e prepare sua agenda para funcionar com lembretes e confirmações automáticas.
       </p>
     </div>
 
-    <form>
+    <form (ngSubmit)="onSubmit()">
       <label>
         Nome completo
-        <input type="text" placeholder="Seu nome" />
+        <input
+          type="text"
+          name="fullName"
+          placeholder="Seu nome"
+          [(ngModel)]="fullName"
+        />
       </label>
 
       <label>
         E-mail
-        <input type="email" placeholder="seuemail@exemplo.com" />
+        <input
+          type="email"
+          name="email"
+          placeholder="seuemail@exemplo.com"
+          [(ngModel)]="email"
+        />
       </label>
 
       <label>
         Senha
-        <input type="password" placeholder="Crie uma senha" />
+        <input
+          type="password"
+          name="password"
+          placeholder="Crie uma senha"
+          [(ngModel)]="password"
+        />
       </label>
 
-      <button type="submit">Criar conta</button>
+      <button type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Criando conta...' : 'Criar conta' }}
+      </button>
+
+      <p class="error-message" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </p>
     </form>
 
     <p class="login-link">
