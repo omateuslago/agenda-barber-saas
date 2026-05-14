@@ -1,9 +1,169 @@
-<div *ngIf="isLoading">
-  Carregando...
-</div>
+<div class="dashboard-page">
+  <section class="welcome-card">
+    <div>
+      <p class="eyebrow">Painel FlowBar</p>
 
-<div *ngIf="!isLoading">
-  <h1>Dashboard FlowBar</h1>
-  <p>Bem-vindo, {{ fullName }}</p>
-  <p>{{ email }}</p>
+      <h1 *ngIf="!isLoadingUser">
+        Olá, {{ fullName || 'barbeiro' }}.
+      </h1>
+
+      <h1 *ngIf="isLoadingUser">
+        Carregando...
+      </h1>
+
+      <p class="subtitle">
+        Veja sua agenda, confirmações e automações de WhatsApp em um só lugar.
+      </p>
+    </div>
+
+    <button class="primary-action">
+      Novo agendamento
+    </button>
+  </section>
+
+  <section class="metrics-grid">
+    <article class="metric-card dark">
+      <span>Agendamentos hoje</span>
+
+      <strong *ngIf="!isLoadingDashboard">
+        {{ dashboard?.appointmentsToday ?? 0 }}
+      </strong>
+
+      <strong *ngIf="isLoadingDashboard">
+        ...
+      </strong>
+
+      <small>Horários marcados para hoje</small>
+    </article>
+
+    <article class="metric-card">
+      <span>Receita do mês</span>
+
+      <strong *ngIf="!isLoadingDashboard">
+        R$ {{ dashboard?.monthlyRevenue ?? 0 }}
+      </strong>
+
+      <strong *ngIf="isLoadingDashboard">
+        ...
+      </strong>
+
+      <small>Com base nos atendimentos concluídos</small>
+    </article>
+
+    <article class="metric-card">
+      <span>Barbeiros ativos</span>
+
+      <strong *ngIf="!isLoadingDashboard">
+        {{ dashboard?.totalBarbers ?? 0 }}
+      </strong>
+
+      <strong *ngIf="isLoadingDashboard">
+        ...
+      </strong>
+
+      <small>Equipe cadastrada no sistema</small>
+    </article>
+
+    <article class="metric-card">
+      <span>Serviços cadastrados</span>
+
+      <strong *ngIf="!isLoadingDashboard">
+        {{ dashboard?.totalServices ?? 0 }}
+      </strong>
+
+      <strong *ngIf="isLoadingDashboard">
+        ...
+      </strong>
+
+      <small>Cortes, barba e combos disponíveis</small>
+    </article>
+  </section>
+
+  <section class="automation-card">
+    <div class="automation-content">
+      <div class="automation-icon">WA</div>
+
+      <div>
+        <p class="eyebrow">WhatsApp automático</p>
+        <h2>Reduza faltas com confirmações inteligentes.</h2>
+        <p>
+          Envie lembretes, confirmações e mensagens de retorno para seus clientes
+          sem perder tempo respondendo tudo manualmente.
+        </p>
+      </div>
+    </div>
+
+    <div class="automation-status">
+      <span class="status-dot"></span>
+      Automação em preparação
+    </div>
+  </section>
+
+  <section class="content-grid">
+    <article class="panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Agenda</p>
+          <h2>Próximos horários</h2>
+        </div>
+
+        <a href="#">Ver agenda</a>
+      </div>
+
+      <div class="appointment-list">
+        <div class="appointment-item">
+          <div class="time">09:30</div>
+          <div>
+            <strong>João Pedro</strong>
+            <small>Corte + barba · Carlos</small>
+          </div>
+          <span class="badge confirmed">Confirmado</span>
+        </div>
+
+        <div class="appointment-item">
+          <div class="time">10:40</div>
+          <div>
+            <strong>Lucas Martins</strong>
+            <small>Degradê · Rafael</small>
+          </div>
+          <span class="badge pending">Pendente</span>
+        </div>
+
+        <div class="appointment-item">
+          <div class="time">13:00</div>
+          <div>
+            <strong>André Silva</strong>
+            <small>Barba · Carlos</small>
+          </div>
+          <span class="badge confirmed">Confirmado</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="panel">
+      <div class="panel-header">
+        <div>
+          <p class="eyebrow">Ações rápidas</p>
+          <h2>O que fazer agora?</h2>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <button>
+          Cadastrar serviço
+          <small>Adicione corte, barba e combos</small>
+        </button>
+
+        <button>
+          Adicionar barbeiro
+          <small>Monte sua equipe no sistema</small>
+        </button>
+
+        <button>
+          Configurar WhatsApp
+          <small>Prepare lembretes automáticos</small>
+        </button>
+      </div>
+    </article>
+  </section>
 </div>

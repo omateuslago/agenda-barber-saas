@@ -1,0 +1,22 @@
+<div class="app-shell">
+  <header class="topbar">
+    <a routerLink="/dashboard" class="brand">
+      <div class="brand-icon">FB</div>
+      <span>FlowBar</span>
+    </a>
+
+    <button type="button" class="logout-button" (click)="logout()">
+      Sair
+    </button>
+  </header>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <nav class="bottom-nav">
+    <a routerLink="/dashboard">Início</a>
+    <a routerLink="/appointments">Agenda</a>
+    <a routerLink="/automations">WhatsApp</a>
+  </nav>
+</div>

@@ -17,8 +17,15 @@ export const routes: Routes = [
       import('./features/auth/register/register').then(m => m.Register)
   },
   {
-    path: 'dashboard',
+    path: '',
     loadComponent: () =>
-      import('./features/dashboard/dashboard').then(m => m.Dashboard)
+      import('./layout/main-layout/main-layout').then(m => m.MainLayout),
+    children: [
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard').then(m => m.Dashboard)
+      }
+    ]
   }
 ];
