@@ -41,7 +41,7 @@ public class AppointmentsController : ControllerBase
 
         if (date.HasValue)
         {
-            var startDate = date.Value.Date;
+            var startDate = DateTime.SpecifyKind(date.Value.Date, DateTimeKind.Utc);
             var endDate = startDate.AddDays(1);
 
             query = query.Where(x => x.StartsAt >= startDate && x.StartsAt < endDate);
