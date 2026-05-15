@@ -22,9 +22,29 @@ export const routes: Routes = [
       import('./layout/main-layout/main-layout').then(m => m.MainLayout),
     children: [
       {
+        path: 'barber-shop',
+        loadComponent: () =>
+          import('./features/barber-shop/barber-shop').then(m => m.BarberShop)
+      },
+      {
         path: 'dashboard',
         loadComponent: () =>
           import('./features/dashboard/dashboard').then(m => m.Dashboard)
+      },
+      {
+        path: 'services',
+        loadComponent: () =>
+          import('./features/services/services').then(m => m.Services)
+      },
+      {
+        path: 'barbers',
+        loadComponent: () =>
+          import('./features/barbers/barbers').then(m => m.Barbers)
+      },
+      {
+        path: 'appointments',
+        loadComponent: () =>
+          import('./features/appointments/appointments').then(m => m.Appointments)
       }
     ]
   }

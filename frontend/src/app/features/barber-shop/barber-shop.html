@@ -1,0 +1,74 @@
+<div class="barber-shop-page">
+    <section class="page-hero">
+        <div>
+            <p class="eyebrow">Configuração inicial</p>
+            <h1>Minha barbearia</h1>
+            <p>
+                Cadastre as informações principais da sua barbearia para começar a usar
+                agenda, serviços, barbeiros e automações.
+            </p>
+        </div>
+
+        <div class="status-pill">
+            {{ barberShop ? 'Perfil configurado' : 'Pendente' }}
+        </div>
+    </section>
+
+    <section class="content-grid">
+        <article class="form-card">
+            <div class="card-header">
+                <p class="eyebrow">Dados principais</p>
+                <h2>{{ barberShop ? 'Editar barbearia' : 'Cadastrar barbearia' }}</h2>
+            </div>
+
+            <div *ngIf="isLoading" class="loading-box">
+                Carregando dados...
+            </div>
+
+            <form *ngIf="!isLoading" (ngSubmit)="onSubmit()">
+                <label>
+                    Nome da barbearia
+                    <input type="text" name="name" placeholder="Ex: Barbearia do João" [(ngModel)]="name" />
+                </label>
+
+                <label>
+                    WhatsApp da barbearia
+                    <input type="text" name="phone" placeholder="Ex: (19) 99999-9999" maxlength="15" [ngModel]="phone"
+                        (ngModelChange)="phone = formatPhone($event)" />
+                </label>
+
+                <button type="submit" [disabled]="isSaving">
+                    {{ isSaving ? 'Salvando...' : barberShop ? 'Salvar alterações' : 'Cadastrar barbearia' }}
+                </button>
+
+                <p class="success-message" *ngIf="successMessage">
+                    {{ successMessage }}
+                </p>
+
+                <p class="error-message" *ngIf="errorMessage">
+                    {{ errorMessage }}
+                </p>
+            </form>
+        </article>
+
+        <aside class="preview-card">
+            <p class="eyebrow">Próximo passo</p>
+            <h2>Seu link de agendamento</h2>
+
+            <p>
+                Em breve, seus clientes poderão acessar um link público para agendar
+                horário sem precisar criar conta.
+            </p>
+
+            <div class="mock-link">
+                flowbar.app/{{ name || 'sua-barbearia' }}
+            </div>
+
+            <div class="benefits">
+                <span>Sem login para clientes</span>
+                <span>Agendamento rápido</span>
+                <span>WhatsApp automático</span>
+            </div>
+        </aside>
+    </section>
+</div>

@@ -1,0 +1,274 @@
+.barbers-page {
+  display: grid;
+  gap: 18px;
+}
+
+.page-hero {
+  background:
+    radial-gradient(circle at top right, rgba(201, 164, 92, 0.24), transparent 34%),
+    linear-gradient(135deg, #171717, #2b2118);
+  color: #fff;
+  border-radius: 30px;
+  padding: 24px;
+  display: grid;
+  gap: 18px;
+  box-shadow: 0 24px 70px rgba(23, 23, 23, 0.2);
+
+  h1 {
+    margin: 8px 0 10px;
+    font-size: clamp(32px, 7vw, 56px);
+    line-height: 1;
+  }
+
+  p:not(.eyebrow) {
+    margin: 0;
+    color: #e7ddcf;
+    line-height: 1.6;
+    max-width: 620px;
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  color: #c9a45c;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.status-pill {
+  width: fit-content;
+  border-radius: 999px;
+  background: rgba(201, 164, 92, 0.16);
+  color: #f1d99f;
+  border: 1px solid rgba(201, 164, 92, 0.26);
+  padding: 10px 13px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.content-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.form-card,
+.list-card {
+  background: #fff;
+  border: 1px solid #e5dac9;
+  border-radius: 28px;
+  padding: 20px;
+}
+
+.card-header {
+  margin-bottom: 20px;
+
+  h2 {
+    margin: 6px 0 0;
+    color: #171717;
+    font-size: 24px;
+  }
+}
+
+form {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: #2b2b2b;
+  font-weight: 900;
+}
+
+input {
+  height: 54px;
+  border: 1px solid #ddd2c4;
+  border-radius: 16px;
+  padding: 0 16px;
+  font-size: 16px;
+  background: #fdfbf8;
+  color: #171717;
+  outline: none;
+
+  &:focus {
+    border-color: #c9a45c;
+    box-shadow: 0 0 0 4px rgba(201, 164, 92, 0.18);
+  }
+}
+
+button {
+  height: 54px;
+  border: 0;
+  border-radius: 18px;
+  background: #171717;
+  color: #fff;
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.secondary-button {
+  background: #f3f0ea;
+  color: #171717;
+  border: 1px solid #e5dac9;
+}
+
+.loading-box,
+.empty-state {
+  background: #f8f4ee;
+  color: #6b6257;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.success-message,
+.error-message {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.success-message {
+  color: #177245;
+  background: #e8f6ee;
+  border: 1px solid #c8ead6;
+}
+
+.error-message {
+  color: #b42318;
+  background: #fff1f0;
+  border: 1px solid #ffccc7;
+}
+
+.empty-state {
+  text-align: center;
+
+  h3 {
+    color: #171717;
+    margin: 8px 0;
+  }
+
+  p {
+    margin: 0;
+    line-height: 1.5;
+  }
+}
+
+.empty-icon {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 8px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: #171717;
+  color: #c9a45c;
+  font-size: 24px;
+}
+
+.barber-list {
+  display: grid;
+  gap: 12px;
+}
+
+.barber-item {
+  background: #f8f4ee;
+  border: 1px solid #eee3d5;
+  border-radius: 22px;
+  padding: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.barber-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  strong {
+    display: block;
+    color: #171717;
+    margin-bottom: 4px;
+  }
+
+  small {
+    color: #7a7065;
+  }
+}
+
+.barber-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: #171717;
+  color: #c9a45c;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 900;
+  flex: 0 0 auto;
+}
+
+.barber-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  button {
+    height: 44px;
+    font-size: 13px;
+  }
+}
+
+.edit-button {
+  background: #171717;
+  color: #fff;
+}
+
+.delete-button {
+  background: #fff1f0;
+  color: #b42318;
+  border: 1px solid #ffccc7;
+}
+
+@media (min-width: 900px) {
+  .page-hero {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding: 36px;
+  }
+
+  .content-grid {
+    grid-template-columns: 0.85fr 1.15fr;
+  }
+
+  .form-card,
+  .list-card {
+    padding: 26px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .barber-item {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .barber-actions {
+    grid-template-columns: auto auto;
+
+    button {
+      padding: 0 14px;
+    }
+  }
+}

@@ -1,0 +1,104 @@
+<div class="barbers-page">
+  <section class="page-hero">
+    <div>
+      <p class="eyebrow">Equipe da barbearia</p>
+      <h1>Barbeiros</h1>
+      <p>
+        Cadastre os profissionais que atendem na sua barbearia e prepare sua agenda
+        para organizar horários por barbeiro.
+      </p>
+    </div>
+
+    <div class="status-pill">
+      {{ barbers.length }} {{ barbers.length === 1 ? 'barbeiro' : 'barbeiros' }}
+    </div>
+  </section>
+
+  <section class="content-grid">
+    <article class="form-card">
+      <div class="card-header">
+        <p class="eyebrow">Profissional</p>
+        <h2>{{ editingBarber ? 'Editar barbeiro' : 'Novo barbeiro' }}</h2>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-box">
+        Carregando barbeiros...
+      </div>
+
+      <form *ngIf="!isLoading" (ngSubmit)="onSubmit()">
+        <label>
+          Nome do barbeiro
+          <input
+            type="text"
+            name="name"
+            placeholder="Ex: Carlos Henrique"
+            [(ngModel)]="name"
+          />
+        </label>
+
+        <button type="submit" [disabled]="isSaving || !barberShop">
+          {{ isSaving ? 'Salvando...' : editingBarber ? 'Salvar alterações' : 'Cadastrar barbeiro' }}
+        </button>
+
+        <button
+          *ngIf="editingBarber"
+          type="button"
+          class="secondary-button"
+          (click)="cancelEdit()"
+        >
+          Cancelar edição
+        </button>
+
+        <p class="success-message" *ngIf="successMessage">
+          {{ successMessage }}
+        </p>
+
+        <p class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </p>
+      </form>
+    </article>
+
+    <article class="list-card">
+      <div class="card-header list-header">
+        <div>
+          <p class="eyebrow">Lista</p>
+          <h2>Profissionais cadastrados</h2>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && barbers.length === 0" class="empty-state">
+        <div class="empty-icon">💈</div>
+        <h3>Nenhum barbeiro cadastrado</h3>
+        <p>
+          Adicione os profissionais que poderão receber agendamentos pelo FlowBar.
+        </p>
+      </div>
+
+      <div class="barber-list" *ngIf="barbers.length > 0">
+        <article class="barber-item" *ngFor="let barber of barbers">
+          <div class="barber-main">
+            <div class="barber-avatar">
+              {{ barber.name.charAt(0).toUpperCase() }}
+            </div>
+
+            <div>
+              <strong>{{ barber.name }}</strong>
+              <small>Profissional disponível para agendamentos</small>
+            </div>
+          </div>
+
+          <div class="barber-actions">
+            <button type="button" class="edit-button" (click)="startEdit(barber)">
+              Editar
+            </button>
+
+            <button type="button" class="delete-button" (click)="deleteBarber(barber)">
+              Excluir
+            </button>
+          </div>
+        </article>
+      </div>
+    </article>
+  </section>
+</div>

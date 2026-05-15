@@ -1,0 +1,130 @@
+<div class="services-page">
+  <section class="page-hero">
+    <div>
+      <p class="eyebrow">Catálogo da barbearia</p>
+      <h1>Serviços</h1>
+      <p>
+        Cadastre cortes, barba e combos que seus clientes poderão agendar pelo FlowBar.
+      </p>
+    </div>
+
+    <div class="status-pill">
+      {{ services.length }} {{ services.length === 1 ? 'serviço' : 'serviços' }}
+    </div>
+  </section>
+
+  <section class="content-grid">
+    <article class="form-card">
+      <div class="card-header">
+        <p class="eyebrow">Serviço</p>
+        <h2>{{ editingService ? 'Editar serviço' : 'Novo serviço' }}</h2>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-box">
+        Carregando serviços...
+      </div>
+
+      <form *ngIf="!isLoading" (ngSubmit)="onSubmit()">
+        <label>
+          Nome do serviço
+          <input
+            type="text"
+            name="name"
+            placeholder="Ex: Corte masculino"
+            [(ngModel)]="name"
+          />
+        </label>
+
+        <div class="form-row">
+          <label>
+            Preço
+            <input
+              type="number"
+              name="price"
+              placeholder="Ex: 40"
+              min="1"
+              step="0.01"
+              [(ngModel)]="price"
+            />
+          </label>
+
+          <label>
+            Duração
+            <input
+              type="number"
+              name="durationMinutes"
+              placeholder="Minutos"
+              min="1"
+              [(ngModel)]="durationMinutes"
+            />
+          </label>
+        </div>
+
+        <button type="submit" [disabled]="isSaving || !barberShop">
+          {{ isSaving ? 'Salvando...' : editingService ? 'Salvar alterações' : 'Cadastrar serviço' }}
+        </button>
+
+        <button
+          *ngIf="editingService"
+          type="button"
+          class="secondary-button"
+          (click)="cancelEdit()"
+        >
+          Cancelar edição
+        </button>
+
+        <p class="success-message" *ngIf="successMessage">
+          {{ successMessage }}
+        </p>
+
+        <p class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </p>
+      </form>
+    </article>
+
+    <article class="list-card">
+      <div class="card-header list-header">
+        <div>
+          <p class="eyebrow">Lista</p>
+          <h2>Serviços cadastrados</h2>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading && services.length === 0" class="empty-state">
+        <div class="empty-icon">✂</div>
+        <h3>Nenhum serviço cadastrado</h3>
+        <p>
+          Comece adicionando os serviços mais vendidos, como corte, barba e combos.
+        </p>
+      </div>
+
+      <div class="service-list" *ngIf="services.length > 0">
+        <article class="service-item" *ngFor="let service of services">
+          <div class="service-main">
+            <div class="service-icon">✂</div>
+
+            <div>
+              <strong>{{ service.name }}</strong>
+              <small>{{ service.durationMinutes }} min de duração</small>
+            </div>
+          </div>
+
+          <div class="service-price">
+            R$ {{ service.price | number:'1.2-2' }}
+          </div>
+
+          <div class="service-actions">
+            <button type="button" class="edit-button" (click)="startEdit(service)">
+              Editar
+            </button>
+
+            <button type="button" class="delete-button" (click)="deleteService(service)">
+              Excluir
+            </button>
+          </div>
+        </article>
+      </div>
+    </article>
+  </section>
+</div>

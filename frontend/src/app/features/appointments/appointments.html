@@ -1,0 +1,179 @@
+<div class="appointments-page">
+  <section class="page-hero">
+    <div>
+      <p class="eyebrow">Agenda inteligente</p>
+      <h1>Agenda</h1>
+      <p>
+        Organize os horários da barbearia, acompanhe clientes e prepare seus
+        lembretes automáticos pelo WhatsApp.
+      </p>
+    </div>
+
+    <div class="status-pill">
+      {{ appointments.length }}
+      {{ appointments.length === 1 ? 'agendamento' : 'agendamentos' }}
+    </div>
+  </section>
+
+  <section class="content-grid">
+    <article class="form-card">
+      <div class="card-header">
+        <p class="eyebrow">Novo horário</p>
+        <h2>Criar agendamento</h2>
+      </div>
+
+      <div *ngIf="isLoading" class="loading-box">
+        Carregando agenda...
+      </div>
+
+      <form *ngIf="!isLoading" (ngSubmit)="onSubmit()">
+        <label>
+          Nome do cliente
+          <input
+            type="text"
+            name="customerName"
+            placeholder="Ex: João Pedro"
+            [(ngModel)]="customerName"
+          />
+        </label>
+
+        <label>
+          WhatsApp do cliente
+          <input
+            type="text"
+            name="customerPhone"
+            placeholder="Ex: (19) 99999-9999"
+            maxlength="15"
+            [ngModel]="customerPhone"
+            (ngModelChange)="customerPhone = formatPhone($event)"
+          />
+        </label>
+
+        <label>
+          Data e horário
+          <input
+            type="datetime-local"
+            name="startsAt"
+            [(ngModel)]="startsAt"
+          />
+        </label>
+
+        <label>
+          Barbeiro
+          <select name="barberId" [(ngModel)]="barberId">
+            <option [ngValue]="null">Selecione um barbeiro</option>
+            <option *ngFor="let barber of barbers" [ngValue]="barber.id">
+              {{ barber.name }}
+            </option>
+          </select>
+        </label>
+
+        <label>
+          Serviço
+          <select name="serviceId" [(ngModel)]="serviceId">
+            <option [ngValue]="null">Selecione um serviço</option>
+            <option *ngFor="let service of services" [ngValue]="service.id">
+              {{ service.name }} · R$ {{ service.price | number:'1.2-2' }}
+            </option>
+          </select>
+        </label>
+
+        <button type="submit" [disabled]="isSaving || barbers.length === 0 || services.length === 0">
+          {{ isSaving ? 'Agendando...' : 'Criar agendamento' }}
+        </button>
+
+        <p class="helper-message" *ngIf="barbers.length === 0 || services.length === 0">
+          Cadastre pelo menos um barbeiro e um serviço antes de criar agendamentos.
+        </p>
+
+        <p class="success-message" *ngIf="successMessage">
+          {{ successMessage }}
+        </p>
+
+        <p class="error-message" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </p>
+      </form>
+    </article>
+
+    <article class="list-card">
+      <div class="list-top">
+        <div>
+          <p class="eyebrow">Dia selecionado</p>
+          <h2>Horários do dia</h2>
+        </div>
+
+        <input
+          class="date-filter"
+          type="date"
+          name="selectedDate"
+          [(ngModel)]="selectedDate"
+          (ngModelChange)="onDateChange()"
+        />
+      </div>
+
+      <div *ngIf="!isLoading && appointments.length === 0" class="empty-state">
+        <div class="empty-icon">📅</div>
+        <h3>Nenhum horário nesse dia</h3>
+        <p>
+          Crie agendamentos manualmente ou, futuramente, compartilhe seu link
+          público para seus clientes agendarem sozinhos.
+        </p>
+      </div>
+
+      <div class="appointment-list" *ngIf="appointments.length > 0">
+        <article class="appointment-item" *ngFor="let appointment of appointments">
+          <div class="appointment-time">
+            {{ appointment.startsAt | date:'HH:mm' }}
+          </div>
+
+          <div class="appointment-main">
+            <strong>{{ appointment.customerName }}</strong>
+            <small>
+              {{ appointment.serviceName }} · {{ appointment.barberName }}
+            </small>
+            <small>
+              {{ appointment.customerPhone }}
+            </small>
+          </div>
+
+          <div class="appointment-price">
+            R$ {{ appointment.servicePrice | number:'1.2-2' }}
+          </div>
+
+          <span class="badge" [class.cancelled]="appointment.status === 'Cancelled'" [class.completed]="appointment.status === 'Completed'">
+            {{ getStatusLabel(appointment.status) }}
+          </span>
+
+          <div class="appointment-actions">
+            <button
+              type="button"
+              class="complete-button"
+              (click)="updateStatus(appointment, 'Completed')"
+              [disabled]="appointment.status === 'Completed'"
+            >
+              Concluir
+            </button>
+
+            <button
+              type="button"
+              class="cancel-button"
+              (click)="updateStatus(appointment, 'Cancelled')"
+              [disabled]="appointment.status === 'Cancelled'"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              class="delete-button"
+              (click)="deleteAppointment(appointment)"
+            >
+              Excluir
+            </button>
+          </div>
+        </article>
+      </div>
+    </article>
+  </section>
+</div>

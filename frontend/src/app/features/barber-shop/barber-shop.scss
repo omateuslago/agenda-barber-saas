@@ -1,0 +1,204 @@
+.barber-shop-page {
+  display: grid;
+  gap: 18px;
+}
+
+.page-hero {
+  background:
+    radial-gradient(circle at top right, rgba(201, 164, 92, 0.24), transparent 34%),
+    linear-gradient(135deg, #171717, #2b2118);
+  color: #fff;
+  border-radius: 30px;
+  padding: 24px;
+  display: grid;
+  gap: 18px;
+  box-shadow: 0 24px 70px rgba(23, 23, 23, 0.2);
+
+  h1 {
+    margin: 8px 0 10px;
+    font-size: clamp(32px, 7vw, 56px);
+    line-height: 1;
+  }
+
+  p:not(.eyebrow) {
+    margin: 0;
+    color: #e7ddcf;
+    line-height: 1.6;
+    max-width: 620px;
+  }
+}
+
+.eyebrow {
+  margin: 0;
+  color: #c9a45c;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.status-pill {
+  width: fit-content;
+  border-radius: 999px;
+  background: rgba(201, 164, 92, 0.16);
+  color: #f1d99f;
+  border: 1px solid rgba(201, 164, 92, 0.26);
+  padding: 10px 13px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.content-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.form-card,
+.preview-card {
+  background: #fff;
+  border: 1px solid #e5dac9;
+  border-radius: 28px;
+  padding: 20px;
+}
+
+.card-header {
+  margin-bottom: 20px;
+
+  h2 {
+    margin: 6px 0 0;
+    color: #171717;
+    font-size: 24px;
+  }
+}
+
+form {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: #2b2b2b;
+  font-weight: 900;
+}
+
+input {
+  height: 54px;
+  border: 1px solid #ddd2c4;
+  border-radius: 16px;
+  padding: 0 16px;
+  font-size: 16px;
+  background: #fdfbf8;
+  color: #171717;
+  outline: none;
+
+  &:focus {
+    border-color: #c9a45c;
+    box-shadow: 0 0 0 4px rgba(201, 164, 92, 0.18);
+  }
+}
+
+button {
+  height: 56px;
+  border: 0;
+  border-radius: 18px;
+  background: #171717;
+  color: #fff;
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.loading-box {
+  background: #f8f4ee;
+  color: #6b6257;
+  border-radius: 18px;
+  padding: 18px;
+  font-weight: 800;
+}
+
+.success-message,
+.error-message {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.success-message {
+  color: #177245;
+  background: #e8f6ee;
+  border: 1px solid #c8ead6;
+}
+
+.error-message {
+  color: #b42318;
+  background: #fff1f0;
+  border: 1px solid #ffccc7;
+}
+
+.preview-card {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+
+  h2 {
+    margin: 0;
+    font-size: 26px;
+    color: #171717;
+  }
+
+  p:not(.eyebrow) {
+    margin: 0;
+    color: #6b6257;
+    line-height: 1.6;
+  }
+}
+
+.mock-link {
+  background: #171717;
+  color: #c9a45c;
+  border-radius: 18px;
+  padding: 16px;
+  font-weight: 900;
+  word-break: break-all;
+}
+
+.benefits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  span {
+    background: #f3f0ea;
+    color: #6b4f20;
+    border-radius: 999px;
+    padding: 9px 11px;
+    font-size: 12px;
+    font-weight: 900;
+  }
+}
+
+@media (min-width: 900px) {
+  .page-hero {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding: 36px;
+  }
+
+  .content-grid {
+    grid-template-columns: 1fr 0.8fr;
+  }
+
+  .form-card,
+  .preview-card {
+    padding: 26px;
+  }
+}
