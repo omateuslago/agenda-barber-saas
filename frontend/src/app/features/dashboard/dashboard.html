@@ -16,7 +16,7 @@
       </p>
     </div>
 
-    <button class="primary-action">
+    <button class="primary-action" routerLink="/appointments">
       Novo agendamento
     </button>
   </section>
@@ -79,6 +79,59 @@
     </article>
   </section>
 
+  <section class="setup-card" *ngIf="!isLoadingBarberShop">
+    <div class="setup-content">
+      <div class="setup-icon">FB</div>
+
+      <div *ngIf="!barberShop">
+        <p class="eyebrow">Configuração inicial</p>
+        <h2>Finalize sua barbearia para liberar o FlowBar.</h2>
+        <p>
+          Cadastre os dados da sua barbearia para começar a adicionar serviços,
+          barbeiros e organizar sua agenda com mais profissionalismo.
+        </p>
+
+        <div class="setup-tags">
+          <span>Serviços liberados</span>
+          <span>Equipe organizada</span>
+          <span>Agenda pronta</span>
+        </div>
+      </div>
+
+      <div *ngIf="barberShop">
+        <p class="eyebrow">Barbearia configurada</p>
+        <h2>{{ barberShop.name }} já está pronta para operar.</h2>
+        <p>
+          Agora monte sua equipe e cadastre os serviços mais vendidos para começar
+          a organizar horários, clientes e atendimentos no FlowBar.
+        </p>
+
+
+        <div class="setup-tags">
+          <span>Perfil pronto</span>
+          <span>Equipe da barbearia</span>
+          <span>Catálogo de serviços</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="setup-actions" *ngIf="!barberShop">
+      <button class="setup-button" routerLink="/barber-shop">
+        Minha barbearia
+      </button>
+    </div>
+
+    <div class="setup-actions" *ngIf="barberShop">
+      <button class="setup-button" routerLink="/barbers">
+        Adicionar barbeiro
+      </button>
+
+      <button class="setup-button secondary" routerLink="/services">
+        Cadastrar serviço
+      </button>
+    </div>
+  </section>
+
   <section class="automation-card">
     <div class="automation-content">
       <div class="automation-icon">WA</div>
@@ -107,7 +160,7 @@
           <h2>Próximos horários</h2>
         </div>
 
-        <a href="#">Ver agenda</a>
+        <a routerLink="/appointments">Ver agenda</a>
       </div>
 
       <div class="appointment-list">
@@ -149,19 +202,19 @@
       </div>
 
       <div class="quick-actions">
-        <button>
+        <button routerLink="/barber-shop">
+          Minha barbearia
+          <small>Configure os dados principais</small>
+        </button>
+
+        <button routerLink="/services">
           Cadastrar serviço
           <small>Adicione corte, barba e combos</small>
         </button>
 
-        <button>
+        <button routerLink="/barbers">
           Adicionar barbeiro
           <small>Monte sua equipe no sistema</small>
-        </button>
-
-        <button>
-          Configurar WhatsApp
-          <small>Prepare lembretes automáticos</small>
         </button>
       </div>
     </article>

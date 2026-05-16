@@ -15,10 +15,17 @@
   </section>
 
   <section class="content-grid">
-    <article class="form-card">
+    <article class="form-card" id="barber-form" [class.editing]="editingBarber">
       <div class="card-header">
-        <p class="eyebrow">Profissional</p>
+        <p class="eyebrow">
+          {{ editingBarber ? 'Editando profissional' : 'Profissional' }}
+        </p>
+
         <h2>{{ editingBarber ? 'Editar barbeiro' : 'Novo barbeiro' }}</h2>
+
+        <p class="edit-helper" *ngIf="editingBarber">
+          Você está editando {{ editingBarber.name }}. Faça as alterações e salve para atualizar a equipe.
+        </p>
       </div>
 
       <div *ngIf="isLoading" class="loading-box">
@@ -28,24 +35,14 @@
       <form *ngIf="!isLoading" (ngSubmit)="onSubmit()">
         <label>
           Nome do barbeiro
-          <input
-            type="text"
-            name="name"
-            placeholder="Ex: Carlos Henrique"
-            [(ngModel)]="name"
-          />
+          <input type="text" name="name" placeholder="Ex: Carlos Henrique" [(ngModel)]="name" />
         </label>
 
         <button type="submit" [disabled]="isSaving || !barberShop">
           {{ isSaving ? 'Salvando...' : editingBarber ? 'Salvar alterações' : 'Cadastrar barbeiro' }}
         </button>
 
-        <button
-          *ngIf="editingBarber"
-          type="button"
-          class="secondary-button"
-          (click)="cancelEdit()"
-        >
+        <button *ngIf="editingBarber" type="button" class="secondary-button" (click)="cancelEdit()">
           Cancelar edição
         </button>
 

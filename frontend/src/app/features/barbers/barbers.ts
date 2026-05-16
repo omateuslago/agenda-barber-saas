@@ -32,7 +32,7 @@ export class Barbers implements OnInit {
   constructor(
     private barberShopService: BarberShopService,
     private barberService: BarberService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadInitialData();
@@ -135,6 +135,13 @@ export class Barbers implements OnInit {
     this.name = barber.name;
     this.successMessage = '';
     this.errorMessage = '';
+
+    setTimeout(() => {
+      document.getElementById('barber-form')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 0);
   }
 
   cancelEdit(): void {
